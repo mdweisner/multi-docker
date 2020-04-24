@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - dockerk build -t mw2931/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t mw2931/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true mw2931/react-test npm test
