@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - dockerk build -t mw2931/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true mw2931/react-test npm test
+
+after_succes:
+  - docker build -t mw2931/multi-client ./client
+  - docker build -t mw2931/multi-nginx ./nginx
+  - docker build -t mw2931/multi-server ./server
+  - docker build -t mw2931/multi-worker ./worker
+  # log into docker CLI
+  - echo "$DOCKER_PW" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push to docker hub
+  - docker push mw2931/multi-client
+  - docker push mw2931/multi-nginx
+  - docker push mw2931/multi-server
+  - docker push mw2931/multi-worker
+
+language: generic 
